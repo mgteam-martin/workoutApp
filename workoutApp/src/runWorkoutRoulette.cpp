@@ -1,3 +1,15 @@
+/*
+ * PROGRAM NAME: trainHard
+ * PROGRAM DESCRIPTION: A full featured workout application. It will have
+ * many features such as roulette workout, workout log, 1rm calculation
+ * and so much more.
+ *
+ * PROGRAMMER NAME: Martin Mojica
+ * Date created: 02/03/2015
+ * Last data modified: 02/09/2015
+ * 
+ * SOURCES: GOOGLE ;)
+ */
 #include "workoutRoulette.h"
 #include <iostream>
 #include <string>
@@ -9,15 +21,29 @@
 
 using namespace std;
 
+/*
+ * Populates the database with the information from workoutList file
+ * @param filename is the workoutList file
+ * @param database is vector that holds our full list of exercises
+ */
 void populateDatabase ( string filename , vector<Exercise>& database );
+
+/*
+ * Prints the exercise information
+ * @param workout is the exercise to print out
+ */
 void print ( Exercise workout );
+
+/*
+ * Clears the screen
+ */
 void clearScreen ( );
 
 int main ( int argc , char** argv )
 {
-	vector<Exercise> routine;
-	vector<Exercise> database;
-	string filename = argv [ 1 ];
+	vector<Exercise> routine;	//holds the actual workout routine to be used
+	vector<Exercise> database;	//holds all the workouts
+	string filename = argv [ 1 ];	//workoutList file
 	
 	populateDatabase ( filename , database );	
 
@@ -27,19 +53,19 @@ int main ( int argc , char** argv )
 	cout << "How many workouts would you like to do today (1-5): ";
 	cin >> numberOfWorkouts;
 	cout << endl;
-	while ( numberOfWorkouts < 0 || numberOfWorkouts > 5 )	//fix incase it was non-numeric
+	while ( numberOfWorkouts < 0 || numberOfWorkouts > 5 )	//FIX: incase it was non-numeric
 	{
 		cout << "Enter a valid number: ";
 		cin >> numberOfWorkouts;
 	}
 
-	srand ( time(NULL) );	//Initialize random seed
+	srand ( time ( NULL ) );	//Initialize random seed
 	
 	cout << "Building routine...";
 	for ( int i = 0; i < numberOfWorkouts; i++ )
 	{
 		int randomNumber = rand() % database.size ( ) + 0;	//Generate secret number
-		cout << randomNumber << endl;
+		cout << randomNumber << endl;				//FIX: Check to make sure exercise is not already in routine
 		routine.push_back ( database [ randomNumber ] ); 
 	}
 
