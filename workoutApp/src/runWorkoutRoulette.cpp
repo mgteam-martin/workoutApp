@@ -170,6 +170,7 @@ void roulette ( vector<Exercise>& routine , vector<Exercise> database )
 	char trainingType;
 	vector <int> used;
 	int randomNumber;
+	bool alreadyUsed = false;
 
 	cout << "Would you like to do Strength Training (4 Workouts) or Circuit Training (10 Workouts): ";	//FIX: use s and c ONLY
 	cin >> trainingType;
@@ -186,18 +187,20 @@ void roulette ( vector<Exercise>& routine , vector<Exercise> database )
 	
 	for ( int i = 0; i < numberOfWorkouts; i++ )
 	{
-		bool alreadyUsed = false;
 
 		if ( used.size ( ) > 0 )
 		{
 			do { 
+				alreadyUsed = false;
 				randomNumber = randomizer ( min , max );
-				cout << randomNumber << endl;				//FIX: Check to make sure exercise is not already in routine
+				cout << randomNumber << endl;
 				for ( int j = 0; j < used.size ( ); j++ )
 					if ( used [ j ] == randomNumber )
 						alreadyUsed = true;
 			} while ( alreadyUsed == true );
 		}
+		else
+			randomNumber = randomizer ( min , max );
 	
 		used.push_back ( randomNumber );
 		routine.push_back ( database [ randomNumber ] ); 
