@@ -21,6 +21,16 @@
 
 using namespace std;
 
+void menu ( vector<Exercise>& routine , vector<Exercise> database );
+
+void createCustom ( vector<Exercise>& routine , vector<Exercise> database );
+
+void roulette ( vector<Exercise>& routine , vector<Exercise> database );
+
+void previousWorkout ( );
+
+void viewLogs ( );
+
 /*
  * Populates the database with the information from workoutList file
  * @param filename is the workoutList file
@@ -33,6 +43,8 @@ void populateDatabase ( string filename , vector<Exercise>& database );
  * @param workout is the exercise to print out
  */
 void print ( Exercise workout );
+
+int randomizer ( int min , int max );
 
 /*
  * Clears the screen
@@ -47,37 +59,53 @@ int main ( int argc , char** argv )
 	
 	populateDatabase ( filename , database );	
 
-	int numberOfWorkouts = 1;
-
-	cout << "//////////////////// Workout Roulette ////////////////////" << endl;
-	cout << "How many workouts would you like to do today (1-5): ";
-	cin >> numberOfWorkouts;
-	cout << endl;
-	while ( numberOfWorkouts < 0 || numberOfWorkouts > 5 )	//FIX: incase it was non-numeric
-	{
-		cout << "Enter a valid number: ";
-		cin >> numberOfWorkouts;
-	}
-
-	srand ( time ( NULL ) );	//Initialize random seed
-	
-	cout << "Building routine...";
-	for ( int i = 0; i < numberOfWorkouts; i++ )
-	{
-		int randomNumber = rand() % database.size ( ) + 0;	//Generate secret number
-		cout << randomNumber << endl;				//FIX: Check to make sure exercise is not already in routine
-		routine.push_back ( database [ randomNumber ] ); 
-	}
-
-	cout << "Get ready to do " << numberOfWorkouts << " workouts" << endl;
-
-	for ( int i = 0; i < routine.size ( ); i++ )
-	{
-		print ( routine [ i ] );	
-	}
-
+	menu ( routine , database );
 
 	return 0;
+}
+
+void menu ( vector<Exercise>& routine , vector<Exercise> database )
+{
+	clearScreen ( );
+	int selection;
+
+	cout << "*********************** Train Hard ************************" << endl;
+	cout << "*                                                         *" << endl;
+	cout << "*                                                         *" << endl;
+	cout << "*        [0] Create Custom Routine                        *" << endl;
+	cout << "*        [1] Workout Roulette                             *" << endl;
+	cout << "*        [2] Continue Previous Routine                    *" << endl;
+	cout << "*        [3] View Logs                                    *" << endl;
+	cout << "*        [4] Quit                                         *" << endl;
+	cout << "***********************************************************" << endl;
+	cout << "Make a selection: ";
+	cin >> selection;
+	
+	switch ( selection )
+	{
+		case 0:
+			//create custom routine
+			createCustom ( routine , database );
+			break;
+		case 1:
+			//workout roulette
+			roulette ( routine , database );
+			break;
+		case 2:
+			//continue previous routine
+			previousWorkout ( );
+			break;
+		case 3:
+			//view logs
+			viewLogs ( );
+			break;
+		case 4:
+			//quit
+			break;
+		default:
+			//default case
+			break;
+	}
 }
 
 void populateDatabase ( string filename , vector<Exercise>& database )
@@ -130,12 +158,82 @@ void populateDatabase ( string filename , vector<Exercise>& database )
 	}
 }
 
+void createCustom ( vector<Exercise>& routine , vector<Exercise> database )
+{
+}
+
+void roulette ( vector<Exercise>& routine , vector<Exercise> database )
+{
+	int numberOfWorkouts = 1;
+	int max = database.size ( ) - 1;
+	int min = 0;
+	char trainingType;
+	vector <int> used;
+	int randomNumber;
+
+	cout << "Would you like to do Strength Training (4 Workouts) or Circuit Training (10 Workouts): ";	//FIX: use s and c ONLY
+	cin >> trainingType;
+	if ( trainingType == 's' )
+		numberOfWorkouts = 4;
+	else 
+		numberOfWorkouts = 10;
+
+	srand ( time ( NULL ) );	//Initialize random seed
+	
+	clearScreen ( );
+	
+	cout << "Building routine..." << endl;
+	
+	for ( int i = 0; i < numberOfWorkouts; i++ )
+	{
+		bool alreadyUsed = false;
+
+		if ( used.size ( ) > 0 )
+		{
+			do { 
+				randomNumber = randomizer ( min , max );
+				cout << randomNumber << endl;				//FIX: Check to make sure exercise is not already in routine
+				for ( int j = 0; j < used.size ( ); j++ )
+					if ( used [ j ] == randomNumber )
+						alreadyUsed = true;
+			} while ( alreadyUsed == true );
+		}
+	
+		used.push_back ( randomNumber );
+		routine.push_back ( database [ randomNumber ] ); 
+	}
+
+	cout << "Get ready to do " << numberOfWorkouts << " workouts" << endl;
+
+	for ( int i = 0; i < routine.size ( ); i++ )
+	{
+		print ( routine [ i ] );	
+	}
+
+}
+
+void previousWorkout ( )
+{
+
+}
+
+void viewLogs ( )
+{
+
+}
+
 void print ( Exercise workout )
 {
          cout << "Exercise: " << workout.getName ( ) << endl;
          cout << "Reps ( Max ): " << workout.getReps ( ) << endl;
          cout << "Sets: " << workout.getSets ( ) << endl;
          cout << "Rest Time ( mins ): " << workout.getRestTime ( ) << endl;
+}
+
+int randomizer ( int min , int max )
+{
+	int randomNumber = rand ( ) % max + min;
+	return randomNumber;
 }
 
 void clearScreen ( )
